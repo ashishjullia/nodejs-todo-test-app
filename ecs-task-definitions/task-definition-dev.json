@@ -1,0 +1,74 @@
+{
+    "containerDefinitions": [
+        {
+            "name": "ecs_nodejs_container",
+            "image": "254319123211.dkr.ecr.ap-south-1.amazonaws.com/sample-todo-nodejs-pgsql-app:latest",
+            "cpu": 0,
+            "portMappings": [
+                {
+                    "containerPort": 80,
+                    "protocol": "tcp",
+                    "appProtocol": "http"
+                }
+            ],
+            "essential": true,
+            "environment": [],
+            "secrets": [
+            {
+                "name": "RDS_HOSTNAME",
+                "valueFrom": "arn:aws:secretsmanager:ap-south-1:254319123211:secret:nodejs-todo-app-v3-8kwXqP:rds_hostname::"
+            },
+            {
+                "name": "RDS_PORT",
+                "valueFrom": "arn:aws:secretsmanager:ap-south-1:254319123211:secret:nodejs-todo-app-v3-8kwXqP:rds_port::"
+            },
+            {
+                "name": "RDS_IAM_USER",
+                "valueFrom": "arn:aws:secretsmanager:ap-south-1:254319123211:secret:nodejs-todo-app-v3-8kwXqP:rds_iam_user::"
+            },
+            {
+                "name": "RDS_DB_NAME",
+                "valueFrom": "arn:aws:secretsmanager:ap-south-1:254319123211:secret:nodejs-todo-app-v3-8kwXqP:rds_db_name::"
+            },
+            {
+                "name": "AWS_REGION",
+                "valueFrom": "arn:aws:secretsmanager:ap-south-1:254319123211:secret:nodejs-todo-app-v3-8kwXqP:aws_region::"
+            }
+            ],
+            "environmentFiles": [],
+            "mountPoints": [],
+            "volumesFrom": [],
+            "ulimits": [],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-create-group": "true",
+                    "awslogs-group": "/ecs/ecs_nodejs_container",
+                    "awslogs-region": "ap-south-1",
+                    "awslogs-stream-prefix": "ecs"
+                }
+            }
+        }
+    ],
+    "family": "sample-ecs-task-definition-nodejs",
+    "taskRoleArn": "arn:aws:iam::254319123211:role/iam_role_for_ecs_task_role",
+    "executionRoleArn": "arn:aws:iam::254319123211:role/iam_role_for_ecs_execution_role",
+    "networkMode": "awsvpc",
+    "volumes": [],
+    "placementConstraints": [],
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "cpu": "1024",
+    "memory": "2048",
+    "runtimePlatform": {
+        "cpuArchitecture": "X86_64",
+        "operatingSystemFamily": "LINUX"
+    },
+    "tags": [
+        {
+            "key": "Environment",
+            "value": "dev"
+        }
+    ]
+}

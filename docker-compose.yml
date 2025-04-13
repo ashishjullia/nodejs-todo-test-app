@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  app:
+    container_name: todo-node-app
+    build:
+      context: . 
+      dockerfile: Dockerfile.dev 
+    ports:
+      - "80:80" 
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    environment:
+      - NODE_ENV=development
+      - PORT=80
+      - DATABASE_URL=postgresql://todouser:todopassword@db:5432/tododb
+      # - DATABASE_URL=yo
+      # - PGHOST=db
+      # - PGUSER=todouser
+      # - PGPASSWORD=todopassword
+      # - PGDATABASE=tododb
+      # - PGPORT=5432
+    depends_on:
+      - db
+    command: npm run dev
+
+  db:
+    container_name: todo-postgres-db 
+    image: postgres:15-alpine 
+    ports:
+       - "5432:5432" 
+    environment:
+      - POSTGRES_USER=todouser
+      - POSTGRES_PASSWORD=todopassword
+      - POSTGRES_DB=tododb
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    restart: unless-stopped
+    
+volumes:
+  db-data:

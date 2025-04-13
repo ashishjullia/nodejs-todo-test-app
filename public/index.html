@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Todo App</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        #response {
+            margin-top: 15px;
+            padding: 10px;
+            border: 1px solid transparent; /* Start transparent */
+            background-color: #f9f9f9;
+            min-height: 40px; /* Ensure space even when empty */
+            white-space: pre-wrap;
+            transition: all 0.3s ease-in-out;
+        }
+        .error { color: red; border-color: red; }
+        .success { color: green; border-color: green;}
+        #todoList {
+            list-style: none;
+            padding: 0;
+            margin-top: 20px;
+        }
+        #todoList li {
+            background-color: #eee;
+            margin-bottom: 8px;
+            padding: 10px 15px;
+            border-radius: 4px;
+            border-left: 5px solid #007bff;
+        }
+        #todoList li small {
+            display: block;
+            color: #555;
+            font-size: 0.8em;
+            margin-top: 4px;
+        }
+        hr { margin: 30px 0; }
+    </style>
+</head>
+<body>
+    <p><a href="/logout">Logout</a></p>
+    <h1>Add a New Todo</h1>
+    <form id="todoForm">
+        <label for="todoText">Todo:</label>
+        <input type="text" id="todoText" name="todoText" required>
+        <button type="submit">Add Todo</button>
+    </form>
+
+    <div id="response"></div>
+
+    <hr>
+
+    <h2>Existing Todos</h2>
+    <ul id="todoList">
+        <li>Loading...</li>
+    </ul>
+
+    <script>
+        const form = document.getElementById('todoForm');
+        const responseDiv = document.getElementById('response');
+        const todoInput = document.getElementById('todoText');
+        const todoListUl = document.getElementById('todoList');
+
+        // --- Function to Render Todos ---
+        function renderTodos(todos) {
+            todoListUl.innerHTML = ''; // Clear the current list
+
+            if (!todos || todos.length === 0) {
+                todoListUl.innerHTML = '<li>No todos yet!</li>';
+                return;
+            }
+
+            todos.forEach(todo => {
+                const li = document.createElement('li');
+                li.textContent = todo.text; // Set the main text
+
+                // Optionally add timestamp
+                const timestamp = document.createElement('small');
+                timestamp.textContent = `Added: ${new Date(todo.created_at).toLocaleString()}`;
+                li.appendChild(timestamp);
+
+                todoListUl.appendChild(li);
+            });
+        }
+
+        // --- Function to Fetch Todos ---
+        async function fetchTodos() {
+            try {
+                const response = await fetch('/api/todos'); // Fetch from the new GET endpoint
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const todos = await response.json();
+                renderTodos(todos); // Render the fetched todos
+            } catch (error) {
+                console.error('Error fetching todos:', error);
+                todoListUl.innerHTML = '<li>Error loading todos.</li>';
+            }
+        }
+
+        // --- Event Listener for Form Submission ---
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            responseDiv.textContent = 'Saving...';
+            responseDiv.className = ''; // Reset classes
+
+            const todoText = todoInput.value;
+
+            try {
+                const response = await fetch('/add-todo', { // POST to add endpoint
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ todoText: todoText })
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(result.message || `HTTP error! status: ${response.status}`);
+                }
+
+                // Show temporary success message
+                responseDiv.textContent = `Success! "${result.todo.text}" added.`;
+                responseDiv.className = 'success';
+
+                todoInput.value = ''; // Clear the input field
+
+                // --- Refresh the list to show the new item ---
+                await fetchTodos();
+
+                // Optional: Clear the success message after a delay
+                setTimeout(() => {
+                    responseDiv.textContent = '';
+                    responseDiv.className = '';
+                }, 3000); // Clear after 3 seconds
+
+            } catch (error) {
+                console.error('Error submitting todo:', error);
+                responseDiv.textContent = `Error: ${error.message}`;
+                responseDiv.className = 'error';
+            }
+        });
+
+        // --- Initial Fetch When Page Loads ---
+        // Use DOMContentLoaded to ensure elements are ready before fetching/rendering
+        document.addEventListener('DOMContentLoaded', fetchTodos);
+
+    </script>
+</body>
+</html>
