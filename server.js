@@ -8,7 +8,7 @@ const session = require('express-session');
 const app = express();
 const port = process.env.PORT || 80;
 
-const APP_PASSWORD = process.env.APP_PASSWORD || "globalnodes";
+const APP_PASSWORD = process.env.APP_PASSWORD || "example";
 
 const dbConfig = {
     host: process.env.RDS_HOSTNAME,

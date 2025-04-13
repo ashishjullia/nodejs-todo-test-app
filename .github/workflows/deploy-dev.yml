@@ -16,7 +16,7 @@ env:
   ECS_TASK_DEFINITION_FAMILY: "sample-ecs-task-definition-nodejs"
   ECS_SERVICE_NAME: "sample-ecs-service-nodejs"
   ECS_CLUSTER_NAME: "dev-cluster-1"
-  DEPLOY_ROLE: "arn:aws:iam::254319123211:role/globalnodes-exercise-admin-role"
+  DEPLOY_ROLE: "arn:aws:iam::254319123211:role/example-exercise-admin-role"
   AWS_REGION: "ap-south-1"
   RDS_DETAILS_TODO_APP_SECRETS: "arn:aws:secretsmanager:ap-south-1:254319123211:secret:nodejs-todo-app-v3-8kwXqP"
 

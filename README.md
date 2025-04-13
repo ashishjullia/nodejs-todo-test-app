@@ -38,7 +38,7 @@ This is a basic Todo list application built with Node.js, Express, and PostgreSQ
 1.  **Clone the repository:**
     ```bash
     git clone <repository-url>
-    cd globalnodes-sample-nodejs-todo-app
+    cd example-sample-nodejs-todo-app
     ```
 2.  **Configure Environment (if needed):**
     The `docker-compose.yml` sets up environment variables for the database connection. For local development, it uses predefined credentials (`todouser`/`todopassword`) for the PostgreSQL container.
@@ -55,7 +55,7 @@ This is a basic Todo list application built with Node.js, Express, and PostgreSQ
       # - RDS_IAM_USER=...
       # - RDS_DB_NAME=...
       # - AWS_REGION=...
-      - APP_PASSWORD=globalnodes # Set your desired login password here
+      - APP_PASSWORD=example # Set your desired login password here
     ```
 3.  **Build and Run Containers:**
     ```bash
@@ -68,7 +68,7 @@ This is a basic Todo list application built with Node.js, Express, and PostgreSQ
     * Create a volume (`db-data`) for persistent database storage.
 
 4.  **Access the Application:**
-    Open your web browser and navigate to `http://localhost:80` (or the port mapped in `docker-compose.yml`). You should see the login page. Use the password defined by `APP_PASSWORD` (default: "globalnodes") to log in.
+    Open your web browser and navigate to `http://localhost:80` (or the port mapped in `docker-compose.yml`). You should see the login page. Use the password defined by `APP_PASSWORD` (default: "example") to log in.
 
 ## Application Structure
 
@@ -130,7 +130,7 @@ The deployment to the development AWS environment is automated via the `.github/
 * **AWS Deployment:**
     * Database connection details (`RDS_HOSTNAME`, `RDS_PORT`, `RDS_IAM_USER`, `RDS_DB_NAME`, `AWS_REGION`) are injected into the container environment from AWS Secrets Manager, as defined in the ECS task definition (`task-definition-dev.json`).
     * The GitHub Actions workflow updates these secrets in Secrets Manager before deployment, using values stored in GitHub Secrets.
-    * The application login password (`APP_PASSWORD`) should ideally be managed securely (e.g., via Secrets Manager or environment variables) in a production scenario, rather than relying solely on the default or a Docker Compose setting. The current `server.js` reads it from `process.env.APP_PASSWORD` or defaults to "globalnodes".
+    * The application login password (`APP_PASSWORD`) should ideally be managed securely (e.g., via Secrets Manager or environment variables) in a production scenario, rather than relying solely on the default or a Docker Compose setting. The current `server.js` reads it from `process.env.APP_PASSWORD` or defaults to "example".
     * Session secret (`SESSION_SECRET`) is read from `process.env.SESSION_SECRET` or defaults to an insecure value. Ensure this is set securely in a deployed environment.
 
 ## Authentication
